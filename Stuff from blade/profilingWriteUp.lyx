@@ -1,0 +1,626 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize 11
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry true
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\leftmargin 2cm
+\topmargin 1cm
+\rightmargin 2cm
+\bottommargin 2cm
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Profiling
+\end_layout
+
+\begin_layout Section
+Construction of Moment Conditions
+\end_layout
+
+\begin_layout Standard
+The base of what forms the first set of moment conditions is the prediction
+ error, defined by: 
+\begin_inset Formula 
+\[
+\hat{u}_{it}=y_{it}-E\left[\hat{y}_{it}|R_{it}\right]
+\]
+
+\end_inset
+
+where 
+\begin_inset Formula $y_{it}$
+\end_inset
+
+ is the actual consumption of health care at time period 
+\begin_inset Formula $t$
+\end_inset
+
+ and 
+\begin_inset Formula $E\left[\hat{y}_{it}|R_{it}\right]$
+\end_inset
+
+ is the model predicted health care expenditure, given 
+\begin_inset Formula $R_{it}$
+\end_inset
+
+.
+ This was recorded for each individual and stacked into a 
+\begin_inset Formula $(N*T)\times1$
+\end_inset
+
+ matrix.
+ This was then interacted with the matrix of instruments, 
+\begin_inset Formula $Z$
+\end_inset
+
+ (of size 
+\begin_inset Formula $(N*T)\times92$
+\end_inset
+
+, since there were 92 moments used) which contained the following covariates:
+ 
+\end_layout
+
+\begin_layout Enumerate
+An indicator for the first time period (this has to be treated differently
+ with respect to the other time periods since everyone begins with the same
+ 
+\begin_inset Formula $R_{it}$
+\end_inset
+
+.
+ 
+\end_layout
+
+\begin_layout Enumerate
+Interactions between spending regions and time dummies.
+ There were a total of 4 spending regions and 11 time dummies, resulting
+ in 44 instruments.
+\end_layout
+
+\begin_layout Enumerate
+A constant term.
+\end_layout
+
+\begin_layout Standard
+For the second set of moment conditions, we use the prediction error of
+ squared spending, defined by: 
+\begin_inset Formula 
+\[
+\hat{s}_{it}=y_{it}^{2}-E\left[\hat{y}_{it}^{2}|R_{it}\right]
+\]
+
+\end_inset
+
+This was interacted with the same instruments in 
+\begin_inset Formula $Z$
+\end_inset
+
+.
+ This resulted in the following vector of moment conditions: 
+\begin_inset Formula 
+\[
+m=\left[\begin{array}{c}
+Z'*\hat{u}_{it}\\
+Z'*\hat{s}_{it}
+\end{array}\right]
+\]
+
+\end_inset
+
+which is a 
+\begin_inset Formula $92\times1$
+\end_inset
+
+ vector.
+ With this, the objective function used was: 
+\begin_inset Formula 
+\[
+obj=m'*m
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Behavior of Objective Function
+\end_layout
+
+\begin_layout Standard
+For a grid of moral hazard parameters, the objective function is given in
+ Figure 1.
+ The point with the true moral hazard parameter is highlighted with a red
+ circle.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Behavior of Objective Function
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Suraj/OneDrive/Thesis Stuf/Figures/Objective Function/objectiveFunctionWithProperMoments.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+What we find here is that the objective function, although well-behaved,
+ does seem to be discontinuous at certain points.
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+The exact grid used for omega was 5 to 30 with increments of 0.1.
+\end_layout
+
+\end_inset
+
+ However, it seems to achieve a minimum somewhere close to the true value,
+ with what seems to be uniform convergence for omega.
+ 
+\end_layout
+
+\begin_layout Section
+Profiling Results
+\end_layout
+
+\begin_layout Subsection
+Profiling for the moral hazard parameter
+\end_layout
+
+\begin_layout Subsubsection
+Allowing all parameters to vary
+\end_layout
+
+\begin_layout Standard
+There does not seem to be a visible benefit from using the moment conditions
+ specified above, over the earlier ones, in terms of how erratically the
+ graph for omega's profiling behaves.
+ As can be seen, the patterns are pretty similar to what we had earlier.
+ It seems as though the objective function does should allow the identification
+ of omega (since the minimum is achieved close to the true value), but there
+ are many places where the optimizer might get stuck.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Omega Profiling
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Suraj/OneDrive/Thesis Stuf/Figures/Profiling/Omega/Proper Moments/With constant for Second Moments/omegaProfilingAllUnknown.png
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Allowing only the mean and variance to vary
+\end_layout
+
+\begin_layout Standard
+Figure 3 seems to suggest that knowing only the discount factor does not
+ help too much in solving our practical problems in estimating omega.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Omega Profiling
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Suraj/OneDrive/Thesis Stuf/Figures/Profiling/Omega/Proper Moments/omegaProfilingMeanAndVarianceUnknown.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Allowing only the mean and discount factor to vary
+\end_layout
+
+\begin_layout Standard
+Figure 4 shows slight improvement in the behavior of the objective function,
+ but is still prone to step-wise discontinuities that could cause problems
+ for our optimizer.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Omega Profiling
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Suraj/OneDrive/Thesis Stuf/Figures/Profiling/Omega/Proper Moments/With constant for Second Moments/omegaProfilingOnlyMeanUnknown.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Allowing only the variance and discount factor to vary
+\end_layout
+
+\begin_layout Standard
+Figure 5 contains the results.
+ As can be seen, there are some improvements (as was the case in the previous
+ section), but practical concerns still remain.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Omega Profiling
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Suraj/OneDrive/Thesis Stuf/Figures/Profiling/Omega/Proper Moments/With constant for Second Moments/omegaProfilingVarianceAndDeltaUnknown.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Allowing only the mean to vary
+\end_layout
+
+\begin_layout Standard
+Here, in Figure 6, we see that knowing both the variance of the health shock
+ distribution and the discount factor, the objective function seems to behave
+ much better, but again, there are many areas where the optimizer could
+ get stuck.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Omega Profiling
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Suraj/OneDrive/Thesis Stuf/Figures/Profiling/Omega/Proper Moments/omegaProfilingMeanUnknown.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Allowing only the variance to vary
+\end_layout
+
+\begin_layout Standard
+In Figure 7, we see that there isn't much of a difference in the behavior
+ of the objective function when either the mean or the variance of the health
+ shock distribution is known, alongside the discount factor.
+ Again, however, practical concerns remain since there are multiple areas
+ where the optimizer could get stuck.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Omega Profiling
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Suraj/OneDrive/Thesis Stuf/Figures/Profiling/Omega/Proper Moments/With constant for Second Moments/omegaProfilingVarianceUnknown.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+Allowing only the discount factor to vary
+\end_layout
+
+\begin_layout Standard
+In Figure 8, we find that knowing the health shock distribution improves
+ the behavior of the objective function quite a bit.
+ There are some discontinuities remaining, but they don't seem to be as
+ large as in earlier figures.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Omega Profiling
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename C:/Users/Suraj/OneDrive/Thesis Stuf/Figures/Profiling/Omega/Proper Moments/With constant for Second Moments/omegaProfilingDeltaUnknown.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document
